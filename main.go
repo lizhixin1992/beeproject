@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "beeproject/routers"
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -95,11 +96,78 @@ func main() {
 	//num , err :=o.Update(&user, "Name")
 	//fmt.Println(num,err)
 
-
-
-
 	/************************************高级查询*********************************************/
+	//user := new(models.User)
+	//qs := o.QueryTable(user)
+	//fmt.Println(qs.Count())
 
+	//qs.Filter("id", 2)
+	//fmt.Println(qs.Exist())
 
+	//var maps []orm.Params
+	//fmt.Println(qs.Values(&maps,"id"))
+	//for _,m := range maps {
+	//	fmt.Println(m)
+	//}
+
+	//var list []orm.ParamsList
+	//fmt.Println(qs.ValuesList(&list,"id"))
+	//for _,m := range list {
+	//	fmt.Println(m)
+	//}
+
+	/************************************SQL语句查询*********************************************/
+	//user := new(models.User)
+	//err :=o.Raw("select id, name ,profile_id from User where id = ?",2).QueryRow(user)
+	//fmt.Println(user.Id,user.Name,err)
+
+	//var user [] models.User
+	//num, err := o.Raw("select id, name ,profile_id from User where id > ?", 2).QueryRows(&user)
+	//fmt.Println(num, err)
+	//for index := range user {
+	//	fmt.Println(user[index])
+	//}
+
+	////查询返回结构是map格式
+	//var maps [] orm.Params
+	//num, err := o.Raw("select id, name ,profile_id from User where id > ?", 2).Values(&maps)
+	//fmt.Println(num, err)
+	//for index := range maps {
+	//	fmt.Println(maps[index]["id"])
+	//}
+
+	////查询返回结构是分片格式，list[index][0] =》 取id，list[index][1] =》 取name
+	//var list [] orm.ParamsList
+	//num, err := o.Raw("select id, name ,profile_id from User where id > ?", 2).ValuesList(&list)
+	//fmt.Println(num, err)
+	//for index := range list {
+	//	fmt.Println(list[index])
+	//}
+
+	////返回单一字段的平铺 slice 数据（根据查询的返回值），例如查询id和name，返回的数据：list[0]=2,list[1]=slene,list[2]=3,list[4]=slene1
+	//var list orm.ParamsList
+	//num, err := o.Raw("select id, name from User where id > ?", 2).ValuesFlat(&list)
+	//fmt.Println(num, err)
+	//for index := range list {
+	//	fmt.Println(list[index])
+	//}
+
+	//res := make(orm.Params)
+	//num ,err := o.Raw("select id ,name, profile_id from User").RowsToMap(&res,"id","name")
+	//fmt.Println(num, err)
+	//fmt.Println(res)
+
+	p, err := o.Raw("update User set profile_id = ? where id = ? ").Prepare()
+	res, err := p.Exec(9999, "10")
+	num1, err := res.LastInsertId()
+	num2, err := res.RowsAffected()
+	fmt.Println(num1, num2, err)
+
+	res, err = p.Exec(9999, "4")
+	num1, err = res.LastInsertId()
+	num2, err = res.RowsAffected()
+	fmt.Println(num1, num2, err)
+
+	p.Close()
 
 }
