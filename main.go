@@ -157,6 +157,9 @@ func main() {
 	//fmt.Println(num, err)
 	//fmt.Println(res)
 
+	//批量进行操作，实用性不大
+	//
+	o.Begin()
 	p, err := o.Raw("update User set profile_id = ? where id = ? ").Prepare()
 	res, err := p.Exec(9999, "10")
 	num1, err := res.LastInsertId()
@@ -169,5 +172,6 @@ func main() {
 	fmt.Println(num1, num2, err)
 
 	p.Close()
+	o.Commit()
 
 }
